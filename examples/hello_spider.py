@@ -8,7 +8,9 @@ from arackpy.spider import Spider
 class HelloSpider(Spider):
     """A simple spider in just five lines of working code"""
 
-    start_urls = ["https://www.yahoo.com"]
+    wait_time_range = (3, 5)
+
+    start_urls = ["https://www.msn.com"]
 
     def parse(self, url, html):
         """Extract data from the raw html"""

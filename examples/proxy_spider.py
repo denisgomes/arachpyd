@@ -17,7 +17,7 @@ class ProxySpider(Spider):
 
     debug = True
 
-    def __init__(self, backend="Proxy", update_timer=10):
+    def __init__(self, backend="proxy", update_timer=10):
         super(ProxySpider, self).__init__(backend=backend,
                                           update_timer=update_timer)
 

@@ -45,6 +45,7 @@ logging.basicConfig(level=logging.ERROR)
 BACKENDS = {"default": Backend_Default,
             "proxy": None,
             "tor": None,
+            "selenium": None,
             }
 
 try:
@@ -182,7 +183,7 @@ class Spider(object):
 
     def __init__(self, backend="default", **kwargs):
         """Create a spider instance using a backend. The 'default' backend is
-        used by if default.
+        used by  default.
 
         :Parameters:
             `backend` : str
@@ -252,7 +253,8 @@ class Spider(object):
                 if self.level == (self.max_levels + 1):
                     logging.info("Reached jump level %s" % self.max_levels)
                     break
-                elif self.total_url_count == self.max_urls:
+
+                if self.total_url_count == self.max_urls:
                     logging.info("Reached total read url count %s" %
                                  self.total_url_count)
                     break
@@ -261,6 +263,14 @@ class Spider(object):
             sys.exit()
 
     def swap_queues(self):
+        """Swap the full and empty queue.
+
+        .. note::
+            If the first url cannot be read for whatever reason, the program
+            will swap through the queue multiple times util max levels is
+            reached and stop. This can occur with the proxy spider if the
+            proxy is not valid.
+        """
         logging.info("Swapping queues")
         (self.empty_queue, self.active_queue) = (self.active_queue,
                                                  self.empty_queue)
@@ -330,10 +340,10 @@ class Spider(object):
         return ips
 
     def read(self, ip, robot_url, urls):
-        """One thread reads and parses urls from one server ip. This allows for
-        the thread to respect the server while going through the list
-        sequentially. When proxies are used, each thread cycles through the
-        proxies one by one when reading each url.
+        """One thread reads and parses urls from one server ip, i.e. one item
+        from the queue. This allows for the thread to respect the server while
+        going through the list sequentially. When proxies are used, each thread
+        cycles through the proxies one by one when reading each url.
         """
         if robot_url and self.read_robots_file:
             rp = RobotFileParser(robot_url)
@@ -380,7 +390,7 @@ class Spider(object):
                 elif follow_links is False:
                     new_urls = []
                 else:
-                    # user provided urls
+                    # user provided urls from self.parse
                     new_urls = follow_links
 
                 # fill up the once empty queue with absolute urls

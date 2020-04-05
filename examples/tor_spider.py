@@ -14,7 +14,7 @@ class TorSpider(Spider):
 
     debug = True
 
-    def __init__(self, backend="Tor", port=9050):
+    def __init__(self, backend="tor", port=9050):
         super(TorSpider, self).__init__(backend)
 
     def parse(self, url, html):

@@ -17,7 +17,7 @@ dependencies below to be installed to support the various backends:
 * requests
 * pysocks
 * fake_useragent
-* selenium
+* selenium (Selenium backend coming soon!)
 
 
 Installation

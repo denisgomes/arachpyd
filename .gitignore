@@ -1,4 +1,3 @@
-syntax: glob
 tags
 .tags
 .hg
@@ -14,7 +13,4 @@ docs/_build
 docs/_static
 docs/_templates
 arackpy.egg-info
-
-syntax:regexp
-.py[oc]
-.swp
+*.pyc
