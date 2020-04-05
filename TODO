@@ -1,0 +1,30 @@
+Version 0.1.0
+=============
+
+* Pure python implementation of url parser using HTMLParser
+
+TODO
+----
+
+* Merge the py3kport feature branch with the default branch (Complete, a1) -> DONE
+* Clean up to incorporate only the default backend functionality (Complete, b1) -> DONE
+
+
+BUGS
+----
+
+* Fix bug where http://www.example.com and http://www.example.com/ are
+different links -> FIXED
+
+
+Version 0.2.0
+=============
+
+* Implement proxies and tor backends.
+
+
+Version 1.0.0
+=============
+
+* Implement a bloomfilter for visisted links.
+* First stable release
