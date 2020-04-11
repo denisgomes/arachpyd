@@ -74,9 +74,9 @@ class Spider(object):
     the robots.txt file. If a time duration is not explicitly specified in the
     robots file, the default wait_time_range is used.
 
-    The spider can be terminated by adjusting two parameters, namely max_urls
-    and max_levels. Pressing Ctrl-c will also interrupt and kill the spider
-    albeit in a harsh manner.
+    The spider can be terminated based on two parameters, namely max_urls and
+    max_levels. Pressing Ctrl-c will also interrupt and kill the spider albeit
+    in a harsh manner.
 
     :Parameters:
         `start_urls` : list
@@ -134,8 +134,8 @@ class Spider(object):
             specified if nothing is specified. See below for a list of other
             backend and their specific use cases.
 
-        `args` : tuple
-            A tuple of arguments used to initialize the specific backend.
+        `kwargs` : dict
+            Keyword arguments used to initialize the specific backend.
 
     TODO
 
@@ -183,7 +183,7 @@ class Spider(object):
 
     def __init__(self, backend="default", **kwargs):
         """Create a spider instance using a backend. The 'default' backend is
-        used by  default.
+        used by default.
 
         :Parameters:
             `backend` : str
@@ -271,7 +271,7 @@ class Spider(object):
             reached and stop. This can occur with the proxy spider if the
             proxy is not valid.
         """
-        logging.info("Swapping queues")
+        # logging.info("Swapping queues")
         (self.empty_queue, self.active_queue) = (self.active_queue,
                                                  self.empty_queue)
 
@@ -386,7 +386,7 @@ class Spider(object):
             try:
                 if follow_links is None:
                     # extract all new urls, when parse returns nothing
-                    new_urls = self.backend.urlparse(html)
+                    new_urls = self.backend.urlparse(url, html)
                 elif follow_links is False:
                     new_urls = []
                 else:
@@ -407,6 +407,7 @@ class Spider(object):
 
             # wait to respect server before jumping expect if one url only
             if self.respect_server and len(urls) > 1:
+                logging.info("Respecting server at, %s" % ip)
                 try:
                     # python 3.6 method
                     delay = rp.crawl_delay("*")
@@ -423,9 +424,9 @@ class Spider(object):
 
         The user can decide to return a list of urls to follow from the current
         page which the spider will add to the empty queue. Using this approach
-        the spider can be told to crawl to specific pages based on user defined
-        rules and requirements, pagination for example. If parse returns False,
-        all urls are ignored.
+        the spider can be directed to crawl to specific pages based on user
+        defined logic and requirements, pagination for example. If parse
+        returns False, all urls are ignored.
 
         Note, after the empty queue size limit is reached, any remaining urls
         in the list will not be added to the empty queue. In addition, external

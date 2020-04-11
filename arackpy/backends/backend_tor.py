@@ -15,7 +15,14 @@ $ pip install requests, pysocks, fake_useragent
 try this is you have problems with crpytography
 sudo apt install build-essential libssl-dev libffi-dev python-dev
 
+.. todo::
+
+    Update proxy to AnchorTagParser similar to default_backend AnchorTagParser.
+    Convert / to the an absolute url.
+
+    Do we need a decode argument for s.get?
 """
+
 from __future__ import print_function
 
 import requests

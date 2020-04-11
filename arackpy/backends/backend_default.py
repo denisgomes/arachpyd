@@ -8,7 +8,9 @@ from abc import abstractmethod
 try:
     import urllib2
 except ImportError:
-    import urllib.request, urllib.error, urllib.parse
+    import urllib.request
+    import urllib.error
+    import urllib.parse
 
 from arackpy.utils import AnchorTagParser
 
@@ -29,7 +31,7 @@ class Backend(object):
         pass
 
     @abstractmethod
-    def urlparse(self, html):
+    def urlparse(self, root_url, html):
         """Return a set of urls"""
         pass
 
@@ -46,11 +48,11 @@ class Backend_Default(Backend):
 
     def urlread(self, url, timeout):
         try:
-            return urllib2.urlopen(url, timeout=timeout).read()
+            return urllib2.urlopen(url, timeout=timeout).read().decode("utf-8")
         except NameError:
             # py3
             response = urllib.request.urlopen(url, timeout=timeout)
             return response.read().decode("utf-8")
 
-    def urlparse(self, html):
-        return self.parser.parse(html)
+    def urlparse(self, root_url, html):
+        return self.parser.parse(root_url, html)

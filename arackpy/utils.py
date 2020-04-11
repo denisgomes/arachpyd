@@ -1,16 +1,19 @@
 try:
     from HTMLParser import HTMLParser
     import urllib2
-    from urlparse import urlsplit
+    from urlparse import urlsplit, urljoin
 except ImportError:
     from html.parser import HTMLParser
-    import urllib.request, urllib.error, urllib.parse
-    from urllib.parse import urlsplit
+    import urllib.request
+    import urllib.error
+    import urllib.parse
+    from urllib.parse import urlsplit, urljoin
 
 
 def is_absolute(url):
     # https://stackoverflow.com/questions/8357098/how-can-i-check-if-a-url-is-absolute-using-python
     return bool(urlsplit(url).netloc)
+
 
 def urlopentorr(url):
     proxy_support = urllib2.ProxyHandler({"http": "127.0.0.1:8118"})
@@ -32,10 +35,19 @@ class AnchorTagParser(HTMLParser):
                 if name == "href":
                     self.urls.add(value)
 
-    def parse(self, html):
+    def parse(self, root_url, html):
         """Parse and extract all anchor tags"""
         self.feed(html)
-        urls = self.urls.copy()
+        urls = ["".join([root_url, url]) for url in self.urls if url.startswith("/")]
         self.urls.clear()
 
+        # print urls
+
         return urls
+
+
+if __name__ == "__main__":
+    html = urllib2.urlopen("https://www.msn.com").read().decode("utf-8")
+    anc = AnchorTagParser()
+    anc.parse('https:/www.msn.com', html)
+
