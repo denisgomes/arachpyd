@@ -31,7 +31,7 @@ class Backend(object):
         pass
 
     @abstractmethod
-    def urlparse(self, root_url, html):
+    def urlparse(self, url, html):
         """Return a set of urls"""
         pass
 
@@ -54,5 +54,5 @@ class Backend_Default(Backend):
             response = urllib.request.urlopen(url, timeout=timeout)
             return response.read().decode("utf-8")
 
-    def urlparse(self, root_url, html):
-        return self.parser.parse(root_url, html)
+    def urlparse(self, url, html):
+        return self.parser.parse(html)

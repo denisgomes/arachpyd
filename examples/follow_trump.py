@@ -34,14 +34,15 @@ def hrefs_from_html(body):
 class FollowTrumpSpider(Spider):
     """Crawls the web for links that mention Trump in the body."""
 
-    start_urls = ["https://nytimes.com", "https://news.yahoo.com",
-                  "https://cnn.com", "https://news.msn.com"]
+    start_urls = ["https://news.yahoo.com", "https://news.cnn.com"]
 
     wait_time_range = (1, 3)
 
     timeout = 3
 
-    follow_external_links = True
+    max_urls_per_level = 50
+
+    # debug = True
 
     def parse(self, url, html):
         text = text_from_html(html)

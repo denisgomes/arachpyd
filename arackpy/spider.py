@@ -283,9 +283,9 @@ class Spider(object):
         except AttributeError:
             ipitems = ips.items()
 
-        for ((ip, robot_url), urls) in ipitems:
+        for ((ip, root_url), urls) in ipitems:
             child_thread = threading.Thread(target=self.read,
-                                            args=(ip, robot_url, urls))
+                                            args=(ip, root_url, urls))
             child_thread.daemon = True
             child_thread.start()
 
@@ -321,8 +321,8 @@ class Spider(object):
                 # create robotparser object
                 try:
                     scheme = base_url.split(":")[0]
-                    robot_url = "".join([scheme, "://", loc])
-                    robot = robots.setdefault(loc, robot_url)
+                    root_url = "".join([scheme, "://", loc])
+                    robot = robots.setdefault(loc, root_url)
                 except IOError:
                     robot = None
                     logging.warning("Unable to read robots.txt",
@@ -339,16 +339,29 @@ class Spider(object):
 
         return ips
 
-    def read(self, ip, robot_url, urls):
+    def read(self, ip, root_url, urls):
         """One thread reads and parses urls from one server ip, i.e. one item
         from the queue. This allows for the thread to respect the server while
         going through the list sequentially. When proxies are used, each thread
         cycles through the proxies one by one when reading each url.
+
+        ip - server ip addresss
+
+        root_url - the top level url, something like, news.yahoo.com
+
+        urls - tuple of (base_url, url) where base_url contains current path
+        of the brower location if you will.
+
+        The url is the absolute path to the html file that can can be directly
+        passed in to be read by the backend.
         """
-        if robot_url and self.read_robots_file:
-            rp = RobotFileParser(robot_url)
-            rp.read()
-            logging.info("Reading robots.txt file for url %s" % robot_url)
+        if root_url and self.read_robots_file:
+            try:
+                rp = RobotFileParser(root_url)
+                rp.read()
+                logging.info("Reading robots.txt file for url %s" % root_url)
+            except IOError:
+                logging.warning("Unable to create robotparser, url skipped")
 
         for base_url, url in urls:
             try:
@@ -384,19 +397,19 @@ class Spider(object):
                 break
 
             try:
-                if follow_links is None:
+                if follow_links is None:        # nothing is returned
                     # extract all new urls, when parse returns nothing
                     new_urls = self.backend.urlparse(url, html)
-                elif follow_links is False:
+                elif follow_links is False:     # user initiated termination
                     new_urls = []
                 else:
-                    # user provided urls from self.parse
+                    # user provided urls returned by self.parse
                     new_urls = follow_links
 
                 # fill up the once empty queue with absolute urls
                 for new_url in new_urls:
                     try:
-                        # timeout when queue reaches max size
+                        # print(urljoin(base_url, new_url))
                         self.empty_queue.put(urljoin(base_url, new_url),
                                              timeout=0.1)
                     except Full:
@@ -422,11 +435,14 @@ class Spider(object):
         By default the spider will crawl all urls in the html body in the next
         iteration or jump.
 
-        The user can decide to return a list of urls to follow from the current
-        page which the spider will add to the empty queue. Using this approach
-        the spider can be directed to crawl to specific pages based on user
-        defined logic and requirements, pagination for example. If parse
-        returns False, all urls are ignored.
+        The user can return a list of urls to follow which is added to the
+        empty queue. Using this approach the spider can be directed to crawl to
+        specific pages based on user defined logic and requirements, pagination
+        for example. If parse returns False, all urls are ignored. Note, by
+        default class methods implicitly return None if nothing else is.
+
+        .. attention::
+            The user defined urls in the list must all be absolute urls.
 
         Note, after the empty queue size limit is reached, any remaining urls
         in the list will not be added to the empty queue. In addition, external

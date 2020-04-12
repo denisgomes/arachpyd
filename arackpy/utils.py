@@ -4,9 +4,6 @@ try:
     from urlparse import urlsplit, urljoin
 except ImportError:
     from html.parser import HTMLParser
-    import urllib.request
-    import urllib.error
-    import urllib.parse
     from urllib.parse import urlsplit, urljoin
 
 
@@ -35,10 +32,10 @@ class AnchorTagParser(HTMLParser):
                 if name == "href":
                     self.urls.add(value)
 
-    def parse(self, root_url, html):
+    def parse(self, html):
         """Parse and extract all anchor tags"""
         self.feed(html)
-        urls = ["".join([root_url, url]) for url in self.urls if url.startswith("/")]
+        urls = self.urls.copy()
         self.urls.clear()
 
         # print urls
@@ -50,4 +47,3 @@ if __name__ == "__main__":
     html = urllib2.urlopen("https://www.msn.com").read().decode("utf-8")
     anc = AnchorTagParser()
     anc.parse('https:/www.msn.com', html)
-

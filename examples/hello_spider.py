@@ -12,9 +12,11 @@ class HelloSpider(Spider):
 
     start_urls = ["https://www.msn.com"]
 
-    max_urls_per_level = 3
+    max_urls_per_level = 5
 
-    # debug = True
+    follow_external_links = True
+
+    debug = True
 
     def parse(self, url, html):
         """Extract data from the raw html"""
