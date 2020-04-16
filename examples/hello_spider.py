@@ -16,7 +16,7 @@ class HelloSpider(Spider):
 
     follow_external_links = True
 
-    debug = True
+    # debug = True
 
     def parse(self, url, html):
         """Extract data from the raw html"""

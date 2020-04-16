@@ -34,13 +34,13 @@ def hrefs_from_html(body):
 class FollowTrumpSpider(Spider):
     """Crawls the web for links that mention Trump in the body."""
 
-    start_urls = ["https://news.yahoo.com", "https://news.cnn.com"]
+    start_urls = ["https://news.yahoo.com", "https://news.msn.com"]
 
     wait_time_range = (1, 3)
 
     timeout = 3
 
-    max_urls_per_level = 50
+    max_urls_per_level = 10
 
     # debug = True
 

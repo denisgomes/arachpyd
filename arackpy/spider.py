@@ -350,7 +350,7 @@ class Spider(object):
         root_url - the top level url, something like, news.yahoo.com
 
         urls - tuple of (base_url, url) where base_url contains current path
-        of the brower location if you will.
+        of the browser location if you will.
 
         The url is the absolute path to the html file that can can be directly
         passed in to be read by the backend.
@@ -406,8 +406,11 @@ class Spider(object):
                     # user provided urls returned by self.parse
                     new_urls = follow_links
 
-                # fill up the once empty queue with absolute urls
-                for new_url in new_urls:
+                # to limit the number of url added by each thread the work is
+                # reduced instead of trying to coordinate the threads somemhow
+                nthreads = threading.active_count() - 1     # not main thread
+                qsize = self.max_urls_per_level
+                for new_url in random.sample(new_urls, qsize//nthreads):
                     try:
                         # print(urljoin(base_url, new_url))
                         self.empty_queue.put(urljoin(base_url, new_url),
@@ -445,6 +448,7 @@ class Spider(object):
             The user defined urls in the list must all be absolute urls.
 
         Note, after the empty queue size limit is reached, any remaining urls
+
         in the list will not be added to the empty queue. In addition, external
         urls will not be followed unless the follow_external_links attribute is
         set to True.
