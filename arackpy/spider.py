@@ -145,7 +145,7 @@ class Spider(object):
 
     BUGS
 
-        1. Pypi not showing the code syntax highlighting.
+        1. Pypi not showing code syntax highlighting.
 
     """
     # specify one or more website domain names
@@ -173,9 +173,8 @@ class Spider(object):
     # max urls to put on queue every jump
     max_urls_per_level = 1000
 
-    # termination criterion
+    # termination criteria
     max_levels = 100    # max jumps
-
     max_urls = 5000     # total urls
 
     # debug mode
@@ -399,18 +398,24 @@ class Spider(object):
             try:
                 if follow_links is None:        # nothing is returned
                     # extract all new urls, when parse returns nothing
-                    new_urls = self.backend.urlparse(url, html)
+                    new_urls = self.backend.urlparse(html)
                 elif follow_links is False:     # user initiated termination
                     new_urls = []
                 else:
                     # user provided urls returned by self.parse
                     new_urls = follow_links
 
-                # to limit the number of url added by each thread the work is
+
+                # to limit the number of urls added by each thread the work is
                 # reduced instead of trying to coordinate the threads somemhow
+                qsize = self.max_urls_per_level     # queue size
                 nthreads = threading.active_count() - 1     # not main thread
-                qsize = self.max_urls_per_level
-                for new_url in random.sample(new_urls, qsize//nthreads):
+                urls_per_thread = qsize // nthreads
+
+                if urls_per_thread > len(new_urls):
+                    urls_per_thread = len(new_urls)
+
+                for new_url in random.sample(new_urls, urls_per_thread):
                     try:
                         # print(urljoin(base_url, new_url))
                         self.empty_queue.put(urljoin(base_url, new_url),
@@ -418,7 +423,7 @@ class Spider(object):
                     except Full:
                         logging.info("Queue is full, skipping remaining urls")
                         break
-            except:
+            except AttributeError:
                 logging.warning("Unable to extract urls from url, %s" % url)
 
             # wait to respect server before jumping expect if one url only

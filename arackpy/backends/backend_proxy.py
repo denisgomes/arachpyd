@@ -2,8 +2,8 @@
 basic detection. The proxy backend should only be used for low stakes jobs.
 
 If the user does not provide a list of proxies, free proxies from free-proxy-
-list is used. Note, free proxies are less dependable and potentially can be
-risky so use at your own risk. Free proxies may die out pretty quickly so the
+list is used. Note, free proxies are less dependable and can potentially be
+risky, so use at your own risk. Free proxies may die out pretty quickly so the
 list of proxies should be continually refreshed. Using header spoofing and
 rotation will ensure better overall success.
 
@@ -16,14 +16,13 @@ reached, the queue is refreshed with new free proxies.
 Using free proxies tends to be slow as the quality of the server is usually not
 the best.
 
-
 .. todo::
 
     Update proxy to AnchorTagParser similar to default_backend AnchorTagParser.
     Convert / to the an absolute url.
 
     Allow the user to specify a free proxy website and a function to extract
-    the proxy information that website.
+    the proxy information from that website.
 """
 
 from __future__ import print_function
@@ -88,7 +87,7 @@ class Backend_Proxy(Backend):
             Define the time in minutes after which the free proxy queue is
             refreshed. Only applies to free proxies.
     """
-    def __init__(self, spider, proxies=None, update_timer=5):
+    def __init__(self, spider, proxies=None, update_timer=10):
         super(Backend_Proxy, self).__init__(spider)
 
         if proxies:

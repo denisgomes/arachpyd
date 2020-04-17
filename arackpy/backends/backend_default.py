@@ -26,12 +26,12 @@ class Backend(object):
         return self.__class__.__name__
 
     @abstractmethod
-    def urlread(self, url, timeout=None, proxy=None):
+    def urlread(self, url, timeout):
         """Return the raw html data"""
         pass
 
     @abstractmethod
-    def urlparse(self, url, html):
+    def urlparse(self, html):
         """Return a set of urls"""
         pass
 
@@ -54,5 +54,5 @@ class Backend_Default(Backend):
             response = urllib.request.urlopen(url, timeout=timeout)
             return response.read().decode("utf-8")
 
-    def urlparse(self, url, html):
+    def urlparse(self, html):
         return self.parser.parse(html)

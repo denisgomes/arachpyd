@@ -41,9 +41,3 @@ class AnchorTagParser(HTMLParser):
         # print urls
 
         return urls
-
-
-if __name__ == "__main__":
-    html = urllib2.urlopen("https://www.msn.com").read().decode("utf-8")
-    anc = AnchorTagParser()
-    anc.parse('https:/www.msn.com', html)

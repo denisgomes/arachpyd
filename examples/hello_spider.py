@@ -14,7 +14,7 @@ class HelloSpider(Spider):
 
     max_urls_per_level = 5
 
-    follow_external_links = True
+    # follow_external_links = True
 
     # debug = True
 

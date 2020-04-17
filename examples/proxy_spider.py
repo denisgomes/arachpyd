@@ -11,11 +11,11 @@ class ProxySpider(Spider):
     It updates the proxy queue every 10 minutes with new proxies.
     """
 
-    start_urls = ["https://www.cnn.com"]
+    start_urls = ["https://news.yahoo.com", "https://news.msn.com"]
 
     timeout = 3
 
-    debug = True
+    # debug = True
 
     def __init__(self, backend="proxy", update_timer=10):
         super(ProxySpider, self).__init__(backend=backend,
