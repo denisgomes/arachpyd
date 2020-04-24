@@ -51,13 +51,13 @@ BACKENDS = {"default": Backend_Default,
 try:
     from arackpy.backends.backend_proxy import Backend_Proxy
     BACKENDS["proxy"] = Backend_Proxy
-except ImportError as e:
+except ImportError:
     logging.error("Unable to import backend %s" % "proxy")
 
 try:
     from arackpy.backends.backend_tor import Backend_Tor
     BACKENDS["tor"] = Backend_Tor
-except NotImplementedError as e:
+except ImportError:
     logging.warning("Unable to import backend %s" % "tor")
 
 
@@ -213,7 +213,8 @@ class Spider(object):
             self.backend = BACKENDS[backend](self, **kwargs)
         except (KeyError, TypeError):
             self.backend = BACKENDS["default"](self)
-            logging.warning("Using backend, %s" % "default")
+            logging.warning("%s backend unavailable,",
+                            " using %s" % (backend, "default"))
 
         # initialize queue
         for start_url in self.start_urls:
@@ -259,6 +260,7 @@ class Spider(object):
                     break
 
         except (KeyboardInterrupt, SystemExit):
+            logging.info("user interrupted termination")
             sys.exit()
 
     def swap_queues(self):
@@ -306,8 +308,8 @@ class Spider(object):
                     if self.get_tld(url) not in self.tlds:
                         logging.info("Skipping external url, %s" % url)
                         continue
-                except:
-                    logging.warning("Invalid top level url, %s" % url)
+                except Exception:
+                    logging.exception("Invalid top level url, %s" % url)
                     continue
 
             # robots.txt for top level domain, note one ip can host multiple
@@ -332,8 +334,8 @@ class Spider(object):
                 ips[(gethostbyname(loc.split(":")[0]),
                     robot)].add((base_url, url))
 
-            except:
-                logging.warning("Unable to group url, %s" % url)
+            except Exception:
+                logging.exception("Unable to group url, %s" % url)
                 continue
 
         return ips
@@ -368,8 +370,8 @@ class Spider(object):
                 if rp.can_fetch("*", url) is False:
                     logging.info("robots.txt from %s rejected spider" % url)
                     continue
-            except:
-                logging.info("Ignoring robots.txt file")
+            except Exception:
+                logging.exception("Ignoring robots.txt file")
 
             try:
                 # download the raw html - note urls contains 'http' or 'https'
@@ -387,8 +389,8 @@ class Spider(object):
 
                 self.total_url_count += 1
 
-            except:
-                logging.warning("Unable to download and parse url, %s" % url)
+            except Exception:
+                logging.exception("Unable to download and parse url, %s" % url)
                 self.visited.append(url.rstrip("/"))
 
             # stop each thread if max count is reached
@@ -396,8 +398,10 @@ class Spider(object):
                 break
 
             try:
-                if follow_links is None:        # nothing is returned
+                if follow_links is None:    # nothing is returned
                     # extract all new urls, when parse returns nothing
+                    # new_urls are with respect to current html page
+                    # must use urljoin to form the absolute url below
                     new_urls = self.backend.urlparse(html)
                 elif follow_links is False:     # user initiated termination
                     new_urls = []
@@ -405,13 +409,13 @@ class Spider(object):
                     # user provided urls returned by self.parse
                     new_urls = follow_links
 
-
                 # to limit the number of urls added by each thread the work is
                 # reduced instead of trying to coordinate the threads somemhow
                 qsize = self.max_urls_per_level     # queue size
                 nthreads = threading.active_count() - 1     # not main thread
                 urls_per_thread = qsize // nthreads
 
+                # number of urls sampled cannot be larger than population
                 if urls_per_thread > len(new_urls):
                     urls_per_thread = len(new_urls)
 
@@ -423,8 +427,8 @@ class Spider(object):
                     except Full:
                         logging.info("Queue is full, skipping remaining urls")
                         break
-            except AttributeError:
-                logging.warning("Unable to extract urls from url, %s" % url)
+            except Exception:
+                logging.exception("Unable to extract urls from url, %s" % url)
 
             # wait to respect server before jumping expect if one url only
             if self.respect_server and len(urls) > 1:
@@ -434,6 +438,7 @@ class Spider(object):
                     delay = rp.crawl_delay("*")
                     self.wait(delay=delay)
                 except (NameError, AttributeError):
+                    logging.info("Unable to extract delay time from robots.txt")
                     self.wait()
 
     @abstractmethod

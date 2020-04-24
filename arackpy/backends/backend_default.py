@@ -1,4 +1,4 @@
-"""Backends for reading html and extracting urls."""
+"""Pure Python backend for reading html and extracting urls."""
 
 
 from __future__ import print_function
@@ -37,9 +37,9 @@ class Backend(object):
 
 
 class Backend_Default(Backend):
-    """Uses urllib2 to download html and the native Python html parser to find
-    all anchor tags. Can be slow and does not extract urls for all links with
-    success.
+    """The default backend uses urllib2 to download html and the native Python
+    html parser to extract all anchor tags. This method can be slow and may not
+    extract urls for all links with success.
     """
 
     def __init__(self, spider):

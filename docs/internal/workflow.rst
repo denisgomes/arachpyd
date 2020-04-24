@@ -1,8 +1,8 @@
 Workflow
 ========
 
-**arackpy** uses Mercurial (hg) for its distributed version control system. In
-short there is a default or development branch, a stable branch and one or more
+**arackpy** uses Git (git) for its distributed version control system. In short
+there is a default or development branch, a stable branch and one or more
 feature branches that can be worked on at any given point.
 
 

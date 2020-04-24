@@ -10,13 +10,13 @@ class HelloSpider(Spider):
 
     wait_time_range = (1, 3)
 
-    start_urls = ["https://www.msn.com"]
+    start_urls = ["https://www.yahoo.com"]
 
     max_urls_per_level = 5
 
     # follow_external_links = True
 
-    # debug = True
+    debug = True
 
     def parse(self, url, html):
         """Extract data from the raw html"""

@@ -1,20 +1,20 @@
 virtualenv
 ==========
 
-Follow the steps below to get the source files from BitBucket and to setup a
+Follow the steps below to get the source files from Github and to setup a
 development virtual environment.
 
 
 Get the Project
 ---------------
 
-To clone the `project source <https://www.bitbucket.org/denisgomes/arackpy>`_
-from BitBucket type the following into the terminal:
+To clone the `project source <https://www.github.com/denisgomes/arackpy>`_
+from Github type the following into the terminal:
 
 .. code-block:: bash
 
     cd ~/Projects
-    hg clone https://denisgomes@bitbucket.org/denisgomes/arackpy
+    git clone https://github.com/denisgomes/arackpy
     cd arackpy
 
 
@@ -51,7 +51,7 @@ it is editable:
 
 .. code-block:: bash
 
-    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
     pip install -e arackpy
 
 

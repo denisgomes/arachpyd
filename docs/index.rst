@@ -8,35 +8,28 @@ Overview
 
 **arackpy** is a simple but powerful web crawler and scraper. While it is good
 natured and respectful by default, it can be used to do evil. Remember with
-great power comes great responsibility.
-
-Some features of **arackpy** are:
+great power comes great responsibility. Some features of **arackpy** are:
 
     1. Concurrent page downloads using Python threads
-
     2. Support for robots.txt to prevent host server bottlenecking
-
     3. Different backends for additional capabilities such as:
 
         a. Anonymous scraping using proxies and tor.
-
-        b. Dealing with JavaScript/AJAX requests and,
-
-Join us on the mailing list. Coming soon!
+        b. Dealing with JavaScript/AJAX requests using selenium.
 
 
 Requirements
 ------------
 
-**arackpy** currently supports Python 2.7 and 3.6+ out of the box. Depending on
-the data you want to extract, **future** releases will require one or more of
-the dependencies below to be installed to support the various backends:
+**arackpy** currently supports Python 2.7 to 3.6+ out of the box. Depending on
+how you want to extract data, several other dependencies from the list below is
+required to be installed to support the various backends:
 
-* beautifulSoup and lxml
-* requests
-* pysocks
-* fake_useragent
-* selenium
+    * lxml - for html parsing and url extraction
+    * requests - for downloading html pages
+    * pysocks - for making tor based connections
+    * fake_useragent - for browser spoofing
+    * selenium and mechanize (coming soon!)
 
 
 Installation
@@ -49,11 +42,11 @@ For the vanilla **arackpy** install do a simple pip install:
 
     pip install arackpy
 
-The following packages may also be installed:
+For proxy and tor support:
 
 .. code-block:: bash
 
-    pip install bs4, lxml, requests, pysocks, fake_useragent, selenium
+    pip install lxml, requests, fake_useragent, pysocks
 
 
 Quickstart
@@ -65,7 +58,7 @@ Open up your favorite python text editor and type the following:
 
     # hello_spider.py
 
-    from __future__ import division     # for python 2.7
+    from __future__ import print_function   # python 2 support
 
     from arackpy.spider import Spider
 
@@ -91,7 +84,8 @@ Run the program using:
 
     python hello_spider.py
 
-.. note:: Press Ctrl-c to terminate crawling.
+.. note::
+    Press Ctrl-c to terminate crawling.
 
 
 Programming Guide
@@ -118,6 +112,7 @@ API Reference
    :maxdepth: 2
 
    modules/spider.rst
+   modules/backends.rst
 
 
 Developer Guide
@@ -151,10 +146,10 @@ Listed here are a few third party libraries that you might find useful when
 developing your projects. Please direct any questions to the respective
 authors.
 
-* `BeautifulSoup - A Python library for pulling data out of HTML and XML files.
-  <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>`_
+* `lxml - The most feature-rich and easy-to-use library for processing XML and HTML in the Python language.
+  <https://www.lxml.de>`_
 
-    Works well with static websites where all content is loaded at one time. If installed **arackpy** uses bs4 to extract anchor tags from html pages.
+    Works well with static websites where all content is loaded at one time. If installed, **arackpy** uses lxml to extract anchor tags from html pages.
 
 * For Tor backed anonymous scraping, the following libraries are required.
     * `Requests - HTTP for Humans. <https://2.python-requests.org/en/master/>`_

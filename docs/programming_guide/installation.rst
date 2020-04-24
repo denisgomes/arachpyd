@@ -24,23 +24,11 @@ Extras
 **arackpy** is a pure python library, however in order to use tor and proxies
 the following additional packages must be installed:
 
-To install `BeautifulSoup <https://www.crummy.com/software/BeautifulSoup/>`_
-and make it the default html parser along with lxml, type:
-
-
 .. code-block:: sh
 
-    pip install bs4, lxml
+    pip install lxml, requests, fake_useragent, pysocks
 
 .. note:: By default, **arackpy** uses the builtin python html parser.
-
-Finally for tor and proxy functionality (i.e. anonymous scraping), install the
-following packages from PyPI by typing:
-
-
-.. code-block:: sh
-
-    pip install requests, pysocks, fake_useragent
 
 
 To install `Selenium <https://selenium-python.readthedocs.io/>`_ for dealing
@@ -56,4 +44,4 @@ Running the examples
 --------------------
 
 The source code archives include examples. Archives are
-`available on BitBucket <https://bitbucket.org/denisgomes/arackpy/src/default/examples>`_:
+`available on Github <https://github.com/denisgomes/arackpy/tree/master/examples>`_:

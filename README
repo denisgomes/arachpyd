@@ -9,27 +9,27 @@ great power comes great responsibility.
 Requirements
 ------------
 
-**arackpy** currently supports Python 2.7 and 3.6+ out of the box. Depending on
-the data you want to extract, future releases will require one or more of the
-dependencies below to be installed to support the various backends:
+**arackpy** currently supports Python 2.7 to 3.6+ out of the box. Depending on
+how you want to extract data, several other dependencies from the list below is
+required to be installed to support the various backends:
 
-* beautifulSoup and lxml
-* requests
-* pysocks
-* fake_useragent
-* selenium (Selenium backend coming soon!)
+* lxml - for html parsing and url extraction
+* requests - for downloading html pages
+* pysocks - for making tor based connections
+* fake_useragent - for browser spoofing
+* selenium (coming soon!)
 
 
 Installation
 ------------
 
-For the vanilla **arackpy** install do a simple pip install:
+For a vanilla **arackpy** install with no other dependencies:
 
     pip install arackpy
 
-The following packages may also be installed:
+For proxy and tor support:
 
-    pip install bs4, lxml, requests, pysocks, fake_useragent, selenium
+    pip install lxml, requests, fake_useragent, pysocks
 
 
 Quickstart
@@ -39,7 +39,7 @@ Open up your favorite python text editor and type the following:
 
     # hello_spider.py
 
-    from __future__ import division     # for python 2.7
+    from __future__ import print_function   # python 2 support
 
     from arackpy.spider import Spider
 
@@ -61,11 +61,12 @@ Open up your favorite python text editor and type the following:
 
 Run the program using:
 
-    python hello_spider.py
+    $ python hello_spider.py
 
 Note
 
-Press Ctrl-c to terminate crawling.
+Press Ctrl-c to terminate crawling. To use proxies or tor, change the backend
+accordingly.
 
 
 Documentation

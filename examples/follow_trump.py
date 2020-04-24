@@ -21,6 +21,7 @@ def text_from_html(body):
     soup = BeautifulSoup(body, "html.parser")
     texts = soup.findAll(text=True)
     visible_texts = filter(tag_visible, texts)
+
     return u" ".join(t.strip() for t in visible_texts)
 
 
@@ -34,13 +35,15 @@ def hrefs_from_html(body):
 class FollowTrumpSpider(Spider):
     """Crawls the web for links that mention Trump in the body."""
 
-    start_urls = ["https://news.yahoo.com"]
+    start_urls = ["https://us.cnn.com", "https://www.nytimes.com",
+                  "https://www.huffpost.com", "https://www.foxnews.com",
+                  "https://www.usatoday.com", "https://www.reuters.com/news/us",
+                  "https://www.politico.com", "https://www.yahoo.com/news",
+                  "https://www.npr.org", "https://www.latimes.com/california"]
 
     wait_time_range = (1, 3)
 
     timeout = 3
-
-    max_urls_per_level = 10
 
     # debug = True
 

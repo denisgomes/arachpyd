@@ -15,14 +15,6 @@ reached, the queue is refreshed with new free proxies.
 
 Using free proxies tends to be slow as the quality of the server is usually not
 the best.
-
-.. todo::
-
-    Update proxy to AnchorTagParser similar to default_backend AnchorTagParser.
-    Convert / to the an absolute url.
-
-    Allow the user to specify a free proxy website and a function to extract
-    the proxy information from that website.
 """
 
 from __future__ import print_function

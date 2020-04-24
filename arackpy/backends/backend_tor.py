@@ -1,27 +1,18 @@
-"""Use Tor to scrape websites.
+"""Use the tor network to crawl and scrape websites.
 
-Remember to still respect the server!
+.. attention::
+    Remember to still respect the server!
 
-# https://medium.com/@jasonrigden/using-tor-with-the-python-request-library-79015b2606cb
+.. note::
+    1. Make sure tor is installed.
 
-1. Make sure tor is installed.
+       $ sudo apt install tor
 
-$ sudo apt install tor
+    2. Try this if you have problems with crpytography.
 
-2. Install requests, pysocks and fake_useragent
-
-$ pip install requests, pysocks, fake_useragent
-
-try this is you have problems with crpytography
-sudo apt install build-essential libssl-dev libffi-dev python-dev
-
-.. todo::
-
-    Update proxy to AnchorTagParser similar to default_backend AnchorTagParser.
-    Convert / to the an absolute url.
-
-    Do we need a decode argument for s.get?
+       $ sudo apt install build-essential libssl-dev libffi-dev python-dev
 """
+# https://medium.com/@jasonrigden/using-tor-with-the-python-request-library-79015b2606cb
 
 from __future__ import print_function
 
