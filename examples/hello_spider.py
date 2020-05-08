@@ -12,11 +12,11 @@ class HelloSpider(Spider):
 
     start_urls = ["https://www.yahoo.com"]
 
-    max_urls_per_level = 5
+    max_urls_per_level = 10
 
     # follow_external_links = True
 
-    debug = True
+    # debug = True
 
     def parse(self, url, html):
         """Extract data from the raw html"""

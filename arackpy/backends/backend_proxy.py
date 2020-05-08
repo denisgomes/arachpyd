@@ -24,8 +24,10 @@ import time
 import sys
 
 try:
+    import Queue as queue
     from Queue import Queue
 except ImportError:
+    import queue
     from queue import Queue
 
 import requests
@@ -138,7 +140,7 @@ class Backend_Proxy(Backend):
                 # self._test_proxy(url, proxy, timeout)
                 return self.urlread(url, timeout)
 
-        except Queue.Empty:
+        except queue.Empty:
             # wait for all threads to join when queue is empty
             while threading.active_count() > 1:
                 time.sleep(0.1)

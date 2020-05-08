@@ -168,7 +168,7 @@ class Spider(object):
     timeout = 1
 
     # thread safe parse
-    thread_safe_parse = True
+    thread_safe_parse = False
 
     # max urls to put on queue every jump
     max_urls_per_level = 1000
@@ -381,17 +381,21 @@ class Spider(object):
                 # note as visited - deques are threadsafe for append
                 self.visited.append(url.rstrip("/"))
 
-                if self.thread_safe_parse:
+                self.total_url_count += 1
+            except Exception:
+                logging.exception("Unable to download url, %s" % url)
+                self.visited.append(url.rstrip("/"))
+                continue
+
+            try:
+                if not self.thread_safe_parse:
+                    follow_links = self.parse(url, html)
+                else:
                     with self.lock:
                         follow_links = self.parse(url, html)
-                else:
-                    follow_links = self.parse(url, html)
-
-                self.total_url_count += 1
-
             except Exception:
-                logging.exception("Unable to download and parse url, %s" % url)
-                self.visited.append(url.rstrip("/"))
+                logging.exception("Unable to parse url, %s" % url)
+                follow_links = False
 
             # stop each thread if max count is reached
             if self.total_url_count == self.max_urls:

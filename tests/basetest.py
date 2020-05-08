@@ -57,6 +57,8 @@ class TestSpider(Spider):
 
     start_urls = ["http://localhost:%s" % DOC_SERVER_PORT]
 
+    thread_safe_parse = True
+
     def stop_crawl(self):
         """Keyboard interrupt"""
         if hasattr(signal, 'CTRL_C_EVENT'):
