@@ -124,7 +124,7 @@ class Spider(object):
         `max_urls` : int
             The total number of urls to crawl before termination. This is
             implemented using a counter that each reader thread increments
-            by one after it reads an url.
+            by one after it successfully reads an url.
 
         `debug` : bool
             Log all debug messages to stdout.
@@ -165,7 +165,7 @@ class Spider(object):
     wait_time_range = (1, 3)
 
     # urlopen timeout in seconds
-    timeout = 1
+    timeout = 5
 
     # thread safe parse
     thread_safe_parse = False
@@ -175,7 +175,7 @@ class Spider(object):
 
     # termination criteria
     max_levels = 100    # max jumps
-    max_urls = 5000     # total urls
+    max_urls = 5000     # total urls read
 
     # debug mode
     debug = False
@@ -269,8 +269,8 @@ class Spider(object):
         .. note::
             If the first url cannot be read for whatever reason, the program
             will swap through the queue multiple times util max levels is
-            reached and stop. This can occur with the proxy spider if the
-            proxy is not valid.
+            reached and stop. This can occur with the proxy spider if the proxy
+            is not valid.
         """
         # logging.info("Swapping queues")
         (self.empty_queue, self.active_queue) = (self.active_queue,
@@ -381,7 +381,6 @@ class Spider(object):
                 # note as visited - deques are threadsafe for append
                 self.visited.append(url.rstrip("/"))
 
-                self.total_url_count += 1
             except Exception:
                 logging.exception("Unable to download url, %s" % url)
                 self.visited.append(url.rstrip("/"))
@@ -398,8 +397,10 @@ class Spider(object):
                 follow_links = False
 
             # stop each thread if max count is reached
-            if self.total_url_count == self.max_urls:
-                break
+            with self.lock:
+                self.total_url_count += 1
+                if self.total_url_count >= self.max_urls:
+                    break
 
             try:
                 if follow_links is None:    # nothing is returned
@@ -414,7 +415,7 @@ class Spider(object):
                     new_urls = follow_links
 
                 # to limit the number of urls added by each thread the work is
-                # reduced instead of trying to coordinate the threads somemhow
+                # reduced instead of trying to coordinate the threads somehow
                 qsize = self.max_urls_per_level     # queue size
                 nthreads = threading.active_count() - 1     # not main thread
                 urls_per_thread = qsize // nthreads
@@ -456,7 +457,7 @@ class Spider(object):
         empty queue. Using this approach the spider can be directed to crawl to
         specific pages based on user defined logic and requirements, pagination
         for example. If parse returns False, all urls are ignored. Note, by
-        default class methods implicitly return None if nothing else is.
+        default methods implicitly return None if nothing else is.
 
         .. attention::
             The user defined urls in the list must all be absolute urls.

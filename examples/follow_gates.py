@@ -32,18 +32,20 @@ def hrefs_from_html(body):
     return hrefs
 
 
-class FollowTrumpSpider(Spider):
-    """Crawls the web for links that mention Trump in the body."""
+class FollowGatesSpider(Spider):
+    """Crawls the web for links that mention Gates in the body."""
 
     start_urls = ["https://us.cnn.com", "https://www.nytimes.com",
-                  # "https://www.huffpost.com", "https://www.foxnews.com",
-                  # "https://www.usatoday.com", "https://www.reuters.com/news/us",
-                  # "https://www.politico.com", "https://www.yahoo.com/news",
+                  "https://www.huffpost.com", "https://www.foxnews.com",
+                  "https://www.usatoday.com", "https://www.reuters.com/news/us",
+                  "https://www.politico.com", "https://www.yahoo.com/news",
                   "https://www.npr.org", "https://www.latimes.com/california"]
 
     wait_time_range = (1, 3)
 
-    timeout = 3
+    timeout = 5
+
+    follow_external_links = True
 
     # debug = True
 
@@ -51,9 +53,10 @@ class FollowTrumpSpider(Spider):
         text = text_from_html(html)
         count = Counter(text.lower().split())
 
-        if count["trump"] >= 1:
-            print("Following Trump at %s"
-                  " - (%s) mentions." % (url, count["trump"]))
+        if count["vaccine"] >= 1 or count["gates"] >= 1:
+            print("Following (vaccine, gates) at %s"
+                  " - (%s, %s) mentions." % (url, count["vaccine"],
+                                             count["gates"]))
             hrefs = hrefs_from_html(html)
 
             # list of urls to put on queue
@@ -63,5 +66,5 @@ class FollowTrumpSpider(Spider):
 
 
 if __name__ == "__main__":
-    spider = FollowTrumpSpider()
-    spider.crawl(10)
+    spider = FollowGatesSpider()
+    spider.crawl()
