@@ -254,7 +254,9 @@ class Spider(object):
                     logging.info("Reached jump level %s" % self.max_levels)
                     break
 
-                if self.total_url_count == self.max_urls:
+                # value of total_url_count can get higher than max_urls
+                # because it is updated by the threads
+                if self.total_url_count >= self.max_urls:
                     logging.info("Reached total read url count %s" %
                                  self.total_url_count)
                     break
@@ -386,6 +388,12 @@ class Spider(object):
                 self.visited.append(url.rstrip("/"))
                 continue
 
+            # stop each thread if max count is reached - don't parse
+            with self.lock:
+                self.total_url_count += 1
+                if self.total_url_count >= self.max_urls:
+                    break
+
             try:
                 if not self.thread_safe_parse:
                     follow_links = self.parse(url, html)
@@ -395,12 +403,6 @@ class Spider(object):
             except Exception:
                 logging.exception("Unable to parse url, %s" % url)
                 follow_links = False
-
-            # stop each thread if max count is reached
-            with self.lock:
-                self.total_url_count += 1
-                if self.total_url_count >= self.max_urls:
-                    break
 
             try:
                 if follow_links is None:    # nothing is returned
