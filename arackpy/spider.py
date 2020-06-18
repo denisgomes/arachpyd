@@ -35,7 +35,7 @@ from arackpy.backends.backend_default import Backend_Default
 # change default encoding for py27 from ascii
 if sys.version_info <= (2, 7):
     reload(sys)
-    sys.setdefaultencoding("utf8")
+    sys.setdefaultencoding("utf-8")
 
 
 # report critial levels above 'warning', (i.e. 'error' and 'critical'), default
@@ -255,8 +255,8 @@ class Spider(object):
                     break
 
                 # value of total_url_count can get higher than max_urls
-                # because it is updated by the threads
-                if self.total_url_count >= self.max_urls:
+                # because it is updated by multiple threads
+                if self.total_url_count > self.max_urls:
                     logging.info("Reached total read url count %s" %
                                  self.total_url_count)
                     break
@@ -391,7 +391,7 @@ class Spider(object):
             # stop each thread if max count is reached - don't parse
             with self.lock:
                 self.total_url_count += 1
-                if self.total_url_count >= self.max_urls:
+                if self.total_url_count > self.max_urls:
                     break
 
             try:
